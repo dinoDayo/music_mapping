@@ -7,8 +7,19 @@ Omodayo Origunwa
 
 from dotenv import load_dotenv
 import os 
-
 load_dotenv()
-print(os.environ.get('spotifyClientID'))
-print(os.environ.get('spotifyClientSecret'))
+
+class spotifyApi:
+
+	def __init__(self):
+		self.name = "Omodayo Origunwa"
+		self.email = "dayo1523@gmail.com"
+		self.client_id = os.environ.get('spotifyClientID')
+		self.client_secret = os.environ.get('spotifyClientSecret')	
+
+	def __str__(self):
+		return "Spotify API Helper"
+
+	def getClient(self):
+		return True		
 
