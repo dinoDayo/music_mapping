@@ -4,6 +4,9 @@ Spotify Music Acessing Tools
 Omodayo Origunwa
 10.26.2022
 """
+import spotipy
+import sys
+from spotipy.oauth2 import SpotifyClientCredentials
 
 from dotenv import load_dotenv
 import os 
@@ -21,5 +24,5 @@ class spotifyApi:
 		return "Spotify API Helper"
 
 	def getClient(self):
-		return True		
-
+		spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
+		return spotify
