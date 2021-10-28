@@ -7,11 +7,12 @@ useful tutorials:
 Omodayo Origunwa
 10.26.2022
 """
-
+import os
+from os import listdir
+from os.path import isfile, join
 import argparse
 import pprint
 import sys
-import os
 import subprocess
 import json
 import spotipy.util as util
@@ -32,6 +33,7 @@ class spotifyApi:
         self.client_id = os.environ.get("spotifyClientID")
         self.client_secret = os.environ.get("spotifyClientSecret")
         self.data_path = "/Users/dayoorigunwa/code_base/music_mapping/data/"
+        self.sp = getClient()
 
     def __str__(self):
         return "Spotify API Helper"
@@ -157,7 +159,7 @@ class spotifyApi:
             )
         return payload
 
-    def test(self, username, playlist):
+    def test(self, username):
         print("Initializing Client")
         sp = self.getClient()
         print("Getting user playlists")
@@ -167,3 +169,25 @@ class spotifyApi:
             self.get_playlist_content(username, playlist, sp)
             print("Getting playlist audio features")
             self.get_playlist_audio_features(username, playlist, sp)
+
+    def download_spotify_playlist_audio_features(self):
+        my_playlists = self.get_user_playlists(username=self.username, sp=self.sp)
+        for playlist in my_playlists:
+            print("Getting playlist content")
+            self.get_playlist_content(self.username, playlist, sp)
+            print("Getting playlist audio features")
+            self.get_playlist_audio_features(self.username, playlist, sp)
+
+    def rename_spotify_songs(data_path=spotifyHelper.data_path):
+        # Renaming files - No longer necessary
+        onlyfiles = [f for f in listdir(data_path) if isfile(join(data_path, f))]
+        id_to_name = {playlist["id"]: playlist["name"] for playlist in my_playlists}
+        for filename in onlyfiles:
+            if "-" in filename:
+                playlist_id = filename.split("-")[-1].split(".")[0]
+                if playlist_id in list(id_to_name.keys()):
+                    os.rename(
+                        data_path + filename,
+                        data_path
+                        + filename.replace(playlist_id, id_to_name[playlist_id]),
+                    )
