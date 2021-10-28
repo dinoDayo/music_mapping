@@ -130,4 +130,4 @@ dmypy.json
 
 # DVC data repos
 .dvc/
-data/
+/data
