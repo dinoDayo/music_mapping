@@ -91,58 +91,58 @@ class spotifyApi:
         for i in songs:
             ids.append(i["track"]["id"])
 
-            index = 0
-            audio_features = []
-            while index < len(ids):
-                audio_features += sp.audio_features(ids[index : index + 50])
-                index += 50
+        ids = [iD for iD in ids if iD]
+        index = 0
+        audio_features = []
+        while index < len(ids):
+            audio_features += sp.audio_features(ids[index : index + 50])
+            index += 50
 
-            features_list = []
-            for features in audio_features:
-                features_list.append(
-                    [
-                        features["energy"],
-                        features["liveness"],
-                        features["tempo"],
-                        features["speechiness"],
-                        features["acousticness"],
-                        features["instrumentalness"],
-                        features["time_signature"],
-                        features["danceability"],
-                        features["key"],
-                        features["duration_ms"],
-                        features["loudness"],
-                        features["valence"],
-                        features["mode"],
-                        features["type"],
-                        features["uri"],
-                    ]
-                )
+        features_list = []
+        for features in audio_features:
+            features_list.append(
+                [
+                    features["energy"],
+                    features["liveness"],
+                    features["tempo"],
+                    features["speechiness"],
+                    features["acousticness"],
+                    features["instrumentalness"],
+                    features["time_signature"],
+                    features["danceability"],
+                    features["key"],
+                    features["duration_ms"],
+                    features["loudness"],
+                    features["valence"],
+                    features["mode"],
+                    features["type"],
+                    features["uri"],
+                ]
+            )
 
-            df = pd.DataFrame(
-                features_list,
-                columns=[
-                    "energy",
-                    "liveness",
-                    "tempo",
-                    "speechiness",
-                    "acousticness",
-                    "instrumentalness",
-                    "time_signature",
-                    "danceability",
-                    "key",
-                    "duration_ms",
-                    "loudness",
-                    "valence",
-                    "mode",
-                    "type",
-                    "uri",
-                ],
-            )
-            df.to_csv(
-                self.data_path + "{}-{}.csv".format(username, playlist["name"]),
-                index=False,
-            )
+        df = pd.DataFrame(
+            features_list,
+            columns=[
+                "energy",
+                "liveness",
+                "tempo",
+                "speechiness",
+                "acousticness",
+                "instrumentalness",
+                "time_signature",
+                "danceability",
+                "key",
+                "duration_ms",
+                "loudness",
+                "valence",
+                "mode",
+                "type",
+                "uri",
+            ],
+        )
+        df.to_csv(
+            self.data_path + "{}-{}.csv".format(username, playlist["name"]), index=False
+        )
 
     def get_user_playlists(self, username, sp):
         playlists = sp.user_playlists(username)
