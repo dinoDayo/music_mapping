@@ -1,4 +1,4 @@
 ['remote "myremote"']
-    url = gdrive://1ywKZEwubm4t5GCSRGSYHgfPC3meKiH21
-    gdrive_client_id = 680258026260-mvstnrbh05nm6o2t5l2hvpu5aqdro7l6.apps.googleusercontent.com
-    gdrive_client_secret = Oy_jAh94V5c1CJcuniEaCBr-
+    url = gdrive://1igshCtIBS6hs8A3Z72hP172RvIL_aAD6
+['remote "storage"']
+    url = gdrive://1igshCtIBS6hs8A3Z72hP172RvIL_aAD6
