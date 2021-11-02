@@ -33,7 +33,7 @@ class spotifyApi:
         self.client_id = os.environ.get("spotifyClientID")
         self.client_secret = os.environ.get("spotifyClientSecret")
         self.data_path = "/Users/dayoorigunwa/code_base/music_mapping/data/"
-        self.sp = getClient()
+        self.sp = self.getClient()
 
     def __str__(self):
         return "Spotify API Helper"
@@ -159,6 +159,14 @@ class spotifyApi:
             )
         return payload
 
+    def get_followed_users(self, username, sp):
+        users = sp.current_user_following_users(
+            ids=[
+                username,
+            ]
+        )
+        return users
+
     def test(self, username):
         print("Initializing Client")
         sp = self.getClient()
@@ -178,8 +186,12 @@ class spotifyApi:
             print("Getting playlist audio features")
             self.get_playlist_audio_features(self.username, playlist, sp)
 
-    def rename_spotify_songs(data_path=spotifyHelper.data_path):
+    def rename_spotify_songs(self, data_path=None):
         # Renaming files - No longer necessary
+        if data_path:
+            pass
+        else:
+            data_path = self.data_path
         onlyfiles = [f for f in listdir(data_path) if isfile(join(data_path, f))]
         id_to_name = {playlist["id"]: playlist["name"] for playlist in my_playlists}
         for filename in onlyfiles:
