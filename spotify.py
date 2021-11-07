@@ -2,23 +2,26 @@
 Spotify Music Acessing Tools
 
 useful tutorials:
-- https://github.com/juandes/spotify-audio-features-data-experiment
+- Audio Analysis: https://github.com/juandes/spotify-audio-features-data-experiment
+- Text Analysis: https://medium.com/swlh/how-to-leverage-spotify-api-genius-lyrics-for-data-science-tasks-in-python-c36cdfb55cf3
 
 Omodayo Origunwa
 10.26.2022
 """
+
 import os
-from os import listdir
-from os.path import isfile, join
-import argparse
-import pprint
 import sys
-import subprocess
 import json
-import spotipy.util as util
-import pandas as pd
+import pprint
 import spotipy
-import sys
+import argparse
+import requests
+import subprocess
+import pandas as pd
+from os import listdir
+import spotipy.util as util
+from bs4 import BeautifulSoup
+from os.path import isfile, join
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
 
@@ -45,7 +48,7 @@ class spotifyApi:
         client = spotipy.Spotify(auth_manager=auth_manager)
         return client
 
-    def get_playlist_content(self, username, playlist, sp):
+    def get_playlist_content(self, username, playlist, sp, csv=True):
         playlist_id = playlist["id"]
         offset = 0
         songs = []
@@ -63,13 +66,15 @@ class spotifyApi:
                 offset += 100
             else:
                 break
+        if csv:
+            with open(
+                self.data_path + "{}-{}".format(username, playlist["name"]), "w"
+            ) as outfile:
+                json.dump(songs, outfile)
+        else:
+            return songs
 
-        with open(
-            self.data_path + "{}-{}".format(username, playlist["name"]), "w"
-        ) as outfile:
-            json.dump(songs, outfile)
-
-    def get_playlist_audio_features(self, username, playlist, sp):
+    def get_playlist_audio_features(self, username, playlist, sp, csv=True):
         playlist_id = playlist["id"]
         offset = 0
         songs = []
@@ -142,9 +147,13 @@ class spotifyApi:
                 "uri",
             ],
         )
-        df.to_csv(
-            self.data_path + "{}-{}.csv".format(username, playlist["name"]), index=False
-        )
+        if csv:
+            df.to_csv(
+                self.data_path + "{}-{}.csv".format(username, playlist["name"]),
+                index=False,
+            )
+        else:
+            return df
 
     def get_user_playlists(self, username, sp):
         playlists = sp.user_playlists(username)
@@ -203,3 +212,74 @@ class spotifyApi:
                         data_path
                         + filename.replace(playlist_id, id_to_name[playlist_id]),
                     )
+
+    def get_album_tracks(self, uri_info):
+        # insert the URI as a string into the function
+        uri = []
+        track = []
+        duration = []
+        explicit = []
+        track_number = []
+        one = self.sp.album_tracks(uri_info, limit=50, offset=0, market="US")
+        df1 = pd.DataFrame(one)
+
+        for i, x in df1["items"].items():
+            uri.append(x["uri"])
+            track.append(x["name"])
+            duration.append(x["duration_ms"])
+            explicit.append(x["explicit"])
+            track_number.append(x["track_number"])
+
+        df2 = pd.DataFrame(
+            {
+                "uri": uri,
+                "track": track,
+                "duration_ms": duration,
+                "explicit": explicit,
+                "track_number": track_number,
+            }
+        )
+
+        return df2
+
+    def get_track_info(self, df):
+        # insert output dataframe from the get_album_tracks function
+        danceability = []
+        energy = []
+        key = []
+        loudness = []
+        speechiness = []
+        acousticness = []
+        instrumentalness = []
+        liveness = []
+        valence = []
+        tempo = []
+        for i in df["uri"]:
+            for x in self.sp.audio_features(tracks=[i]):
+                danceability.append(x["danceability"])
+                energy.append(x["energy"])
+                key.append(x["key"])
+                loudness.append(x["loudness"])
+                speechiness.append(x["speechiness"])
+                acousticness.append(x["acousticness"])
+                instrumentalness.append(x["instrumentalness"])
+                liveness.append(x["liveness"])
+                valence.append(x["valence"])
+                tempo.append(x["tempo"])
+
+        df2 = pd.DataFrame(
+            {
+                "danceability": danceability,
+                "energy": energy,
+                "key": key,
+                "loudness": loudness,
+                "speechiness": speechiness,
+                "acousticness": acousticness,
+                "instrumentalness": instrumentalness,
+                "liveness": liveness,
+                "valence": valence,
+                "tempo": tempo,
+            }
+        )
+
+        return df2
