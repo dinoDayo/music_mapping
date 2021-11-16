@@ -1,6 +1,11 @@
 # code for Genius webscraping: * https://medium.com/swlh/how-to-leverage-spotify-api-genius-lyrics-for-data-science-tasks-in-
 # pt 2: https://dev.to/willamesoares/how-to-integrate-spotify-and-genius-api-to-easily-crawl-song-lyrics-with-python-4o62python-c36cdfb55cf3
 
+
+# TODO:
+# - Add NLP Analysis Tools to this class
+# - Implement functional example of polymorphism via the geniusAPI (?)
+
 import os
 import pandas as pd
 from bs4 import BeautifulSoup
