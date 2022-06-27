@@ -131,6 +131,6 @@ dmypy.json
 .pyre/
 
 # DVC data repos
-.dvc/
-/data
+.dvc/*
+data/
 !data/*.dvc
