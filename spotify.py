@@ -6,7 +6,7 @@ useful tutorials:
 - Text Analysis: https://medium.com/swlh/how-to-leverage-spotify-api-genius-lyrics-for-data-science-tasks-in-python-c36cdfb55cf3
 
 Omodayo Origunwa
-10.26.2022
+10.26.2021
 """
 
 import os
@@ -19,6 +19,7 @@ import requests
 import subprocess
 import pandas as pd
 from os import listdir
+from tqdm import tqdm
 import spotipy.util as util
 from bs4 import BeautifulSoup
 from os.path import isfile, join
@@ -47,6 +48,10 @@ class spotifyApi:
         )
         client = spotipy.Spotify(auth_manager=auth_manager)
         return client
+
+    def get_track_name(self, track_id):
+        # TODO: find spotify API endpoint to GET trackname from track_id
+        return True
 
     def get_playlist_content(self, username, playlist, sp, csv=True):
         playlist_id = playlist["id"]
@@ -188,11 +193,14 @@ class spotifyApi:
             self.get_playlist_audio_features(username, playlist, sp)
 
     def download_spotify_playlist_audio_features(self):
-        my_playlists = self.get_user_playlists(username=self.username, sp=self.sp)
-        for playlist in my_playlists:
-            print("Getting playlist content")
+        username = self.username
+        sp = self.sp
+        print(sp)
+        my_playlists = self.get_user_playlists(username, sp)
+        for playlist in tqdm(my_playlists):
+            #             print("Getting playlist content")
             self.get_playlist_content(self.username, playlist, sp)
-            print("Getting playlist audio features")
+            #             print("Getting playlist audio features")
             self.get_playlist_audio_features(self.username, playlist, sp)
 
     def rename_spotify_songs(self, data_path=None):

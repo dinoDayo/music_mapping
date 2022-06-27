@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_Store
+.Rhistory
 
 # C extensions
 *.so
@@ -131,3 +133,4 @@ dmypy.json
 # DVC data repos
 .dvc/
 /data
+!data/*.dvc

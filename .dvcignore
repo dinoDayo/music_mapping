@@ -1,3 +1,13 @@
 # Add patterns of files dvc should ignore, which could improve
 # the performance. Learn more at
 # https://dvc.org/doc/user-guide/dvcignore
+# .dvcignore is similar to .gitignore in Git, and can be tested 
+# with our helper command 'dvc check-ignore'.
+
+# ignoring Mac-specific files
+.DS_Store
+
+# ignoring youtube downloads for now...
+data/audio_downloads/*
+
+# tbd...
