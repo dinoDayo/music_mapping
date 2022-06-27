@@ -131,7 +131,10 @@ dmypy.json
 .pyre/
 
 # DVC data repos
-.dvc/*
 data/
 !data/*.dvc
 /data
+
+# ignore the .dvc subdir
+!.dvc/config
+
