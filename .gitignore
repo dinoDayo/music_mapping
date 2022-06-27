@@ -134,3 +134,4 @@ dmypy.json
 .dvc/*
 data/
 !data/*.dvc
+/data
