@@ -28,20 +28,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 class spotifyApi:
     def __init__(self):
-        self.name = "Omodayo Origunwa"
-        self.username = 12178525311
-        self.email = "dayo1523@gmail.com"
+        self.name = os.environ.get("myName")
+        self.username = os.environ.get("spotifyUserID")
+        self.email = os.environ.get("myEmail")
         self.client_id = os.environ.get("spotifyClientID")
         self.client_secret = os.environ.get("spotifyClientSecret")
-        self.data_path = "/Users/dayoorigunwa/code_base/music_mapping/data/"
+        self.data_path = os.environ.get("musicDataPath")
         self.sp = self.getClient()
 
     def __str__(self):
         return "Spotify API Helper"
-
+    
     def getClient(self):
         auth_manager = SpotifyClientCredentials(
             client_id=self.client_id, client_secret=self.client_secret
@@ -152,6 +151,7 @@ class spotifyApi:
                 "uri",
             ],
         )
+        df['playlist_id'] = playlist_id
         if csv:
             df.to_csv(
                 self.data_path + "{}-{}.csv".format(username, playlist["name"]),
@@ -159,7 +159,7 @@ class spotifyApi:
             )
         else:
             return df
-
+    
     def get_user_playlists(self, username, sp):
         playlists = sp.user_playlists(username)
         payload = playlists["items"]

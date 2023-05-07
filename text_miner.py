@@ -12,6 +12,7 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 load_dotenv()
 
@@ -35,19 +36,21 @@ class geniusApi:
         response = requests.get(search_url, headers=self.headers)
         return response
 
-    def search_api(self, track_name, track_artist):
+    def search_api(self, track_name, track_artist, debug=True):
         search_url = self.base_url + "/search?q=" + track_name + " " + track_artist
-        print(f"Searching for a match for: {track_name}, {track_artist}")
+        if debug:
+            print(f"Searching for a match for: {track_name}, {track_artist}")
         response = requests.get(search_url, headers=self.headers)
         return response
 
-    def request_song_info(self, track_name, track_artist):
+    def request_song_info(self, track_name, track_artist, debug=True):
         search_url = self.base_url + "/search?q=" + track_name + " " + track_artist
-        print(f"Searching for a match for: {track_name}, {track_artist}")
+        if debug:
+            print(f"Searching for a match for: {track_name}, {track_artist}")
         response = requests.get(search_url, headers=self.headers)
         return response
 
-    def check_hits(self, response, track_artist):
+    def check_hits(self, response, track_artist, debug=True):
         json = response.json()
         remote_song_info = None
         candidates = [
@@ -56,7 +59,8 @@ class geniusApi:
         ]
         for hit in json["response"]["hits"]:
             if track_artist.lower() in hit["result"]["primary_artist"]["name"].lower():
-                print("Found a match!")
+                if debug:
+                    print("Found a match!")
                 remote_song_info = hit
                 break
         return remote_song_info
@@ -65,8 +69,13 @@ class geniusApi:
 class textMiner:
     def __init__(self):
         self.name = "text mining helper"
+        self.data_path = os.environ.get("musicDataPath")
         self.genius = geniusApi()
 
+    def save_df(self, filename, df):
+        date_piece = datetime.today().strftime("%Y-%m-%d")
+        df.to_csv(self.data_path + f"{filename}_{date_piece}.csv")
+        
     def get_html_text(self, text_blocks):
         lyrics = ""
         for htmlObj in text_blocks:
@@ -104,9 +113,9 @@ class textMiner:
         lyrics = self.get_html_text(text_blocks)
         return lyrics
 
-    def search_genius_song(self, track_name, track_artist):
-        response = self.genius.request_song_info(track_name, track_artist)
-        song_info = self.genius.check_hits(response, track_artist)
+    def search_genius_song(self, track_name, track_artist, debug=True):
+        response = self.genius.request_song_info(track_name, track_artist, debug=debug)
+        song_info = self.genius.check_hits(response, track_artist, debug=debug)
         return song_info
 
     def lyrics_onto_frame(self, df1, artist_name):
