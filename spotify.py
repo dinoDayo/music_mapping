@@ -128,6 +128,7 @@ class spotifyApi:
                     features["mode"],
                     features["type"],
                     features["uri"],
+                    features["analysis_url"],
                 ]
             )
 
@@ -149,6 +150,7 @@ class spotifyApi:
                 "mode",
                 "type",
                 "uri",
+                "analysis_url"
             ],
         )
         df['playlist_id'] = playlist_id
