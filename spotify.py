@@ -197,7 +197,6 @@ class spotifyApi:
     def download_spotify_playlist_audio_features(self):
         username = self.username
         sp = self.sp
-        print(sp)
         my_playlists = self.get_user_playlists(username, sp)
         for playlist in tqdm(my_playlists):
             #             print("Getting playlist content")
@@ -293,3 +292,4 @@ class spotifyApi:
         )
 
         return df2
+

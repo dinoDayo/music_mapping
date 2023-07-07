@@ -6,7 +6,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: python3.9
-  stage: ${opt:stage, dev}
+  stage: ${opt:stage, 'dev'}
   profile: ajapa
   deploymentBucket:
      - name: ${self:provider.stage}-deployment-bucket
@@ -18,12 +18,13 @@ functions:
       - httpApi:
           path: /
           method: get
-	  swaggerTags: ['endpoints']
+          swaggerTags: ['endpoints']
   getUserPlaylists:
     handler: scripts/music-api.get_user_playlists
+    events:  
       - httpApi:
-	  path: /get-user-playlists/{username}
+          path: /get-user-playlists/{username}
           method: post
-	  swaggerTags: ['endpoints']
+          swaggerTags: ['endpoints']
   
 	
