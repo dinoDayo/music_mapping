@@ -26,5 +26,45 @@ functions:
           path: /get-user-playlists/{username}
           method: post
           swaggerTags: ['endpoints']
-  
-	
+
+resources:
+  StaticSiteS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: StaticSite
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: "*"
+            Action:
+            - s3:GetObject
+            Resource:
+              Fn::Join: [
+                "", [
+                  "arn:aws:s3:::",
+                  {
+                    "Ref": "StaticSite"
+                  },
+                  "/*"
+                ]
+              ]
+  DnsRecord:
+    Type: "AWS::Route53::RecordSet"
+    Properties:
+      AliasTarget:
+        DNSName: ${self:custom.aliasDNSName}
+        HostedZoneId: ${self:custom.aliasHostedZoneId}
+      HostedZoneName: ${self:custom.siteName}.
+      Name:
+        Ref: StaticSite
+      Type: 'A'
+
+custom:
+  siteName: music-mapping.com
+  aliasHostedZoneId: Z3AQBSTGFYJSTF    # us-east-1
+  aliasDNSName: s3-website-us-east-1.amazonaws.com
+  s3Sync:
+    - bucketName: ${self:custom.hostedZoneName}
+      localDir: static
